@@ -83,7 +83,7 @@ class KRNAuth {
 
     aesDecrypt(ciphered, password) {
         var method = 'aes-256-cbc';
-        var ivSize = crypto.getCipherInfo(method).ivLength;
+        var ivSize = 16;
         var data = this.hex2bin(ciphered);
         var ivData = data.substring(0, ivSize);
         var encData = data.substring(ivSize);
