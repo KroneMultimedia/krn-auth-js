@@ -1,22 +1,20 @@
 const JWT = require('jsonwebtoken');
-const crypto = require('crypto');
 const fetch = require('node-fetch');
 
 // internal vs external use
 const TRINITY_BASE_URL = process.env.KRN_HOST_PREFIX ? 'http://' + process.env.KRN_HOST_PREFIX + 'trinity.krn.krone.at' : 'https://trinity.krone.at';
 
+const ERR_INVALID_TOKEN = { error: 'Invalid Token' };
+
 class KRNAuth {
-    ERR_INVALID_TOKEN = { error: 'Invalid Token' };
 
     constructor(partner) {
         this.partner = partner;
     }
 
     validate(token) {
-        var self = this;
-
         if(!token.startsWith(this.partner.name)) {
-            return self.ERR_INVALID_TOKEN;
+            return ERR_INVALID_TOKEN;
         }
 
         // remove partner prefix
@@ -27,7 +25,7 @@ class KRNAuth {
         try {
             var decoded = JWT.verify(jwt, this.partner.hmac_secret, { algorithms: ['HS256'] });
         } catch(ex) {
-            return self.ERR_INVALID_TOKEN;
+            return ERR_INVALID_TOKEN;
         }
 
         // decrypt payload
@@ -36,8 +34,6 @@ class KRNAuth {
     }
 
     deepValidate(token) {
-        var self = this;
-
         var RENEW_QUERY = `
             mutation doRenew($passport: String!) {
                 renew(passport: $passport) {
@@ -75,7 +71,7 @@ class KRNAuth {
                 if (response.data !== null && response.errors == undefined) {
                     resolve(response.data.renew.DecodedToken);
                 } else {
-                    reject(self.ERR_INVALID_TOKEN);
+                    reject(ERR_INVALID_TOKEN);
                 }
             });
         });
