@@ -1,5 +1,8 @@
 const KRNAuth = require('./KRNAuth');
 
+// when installing via npm:
+// const KRNAuth = require('krn-auth-js');
+
 // enter your partner-settings
 var auth = new KRNAuth({
     'name': '',
