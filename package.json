@@ -1,6 +1,6 @@
 {
   "name": "krn-auth-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "SDK for validating KRN passports",
   "homepage": "https://github.com/KroneMultimedia/krn-auth-js",
   "license": "MIT",

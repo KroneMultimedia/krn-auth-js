@@ -80,7 +80,7 @@ class KRNAuth {
     aesDecrypt(ciphered, password) {
         var method = 'aes-256-cbc';
         var ivSize = 16;
-        var data = this.hex2bin(ciphered);
+        var data = atob(ciphered);
         var ivData = data.substring(0, ivSize);
         var encData = data.substring(ivSize);
 
@@ -92,20 +92,6 @@ class KRNAuth {
         var output = decipher.update(encData, 'binary', 'utf8');
             output += decipher.final('utf8');
         return output;
-    }
-
-    hex2bin (s) {
-        const ret = []
-        let i = 0
-        let l
-        s += ''
-        for (l = s.length; i < l; i += 2) {
-          const c = parseInt(s.substr(i, 1), 16)
-          const k = parseInt(s.substr(i + 1, 1), 16)
-          if (isNaN(c) || isNaN(k)) return false
-          ret.push((c << 4) | k)
-        }
-        return String.fromCharCode.apply(String, ret)
     }
 }
 
