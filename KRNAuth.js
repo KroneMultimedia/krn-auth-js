@@ -1,5 +1,7 @@
 const JWT = require('jsonwebtoken');
 const fetch = require('node-fetch');
+const crypto = require('crypto');
+const atob = require('atob');
 
 // internal vs external use
 const TRINITY_BASE_URL = process.env.KRN_HOST_PREFIX ? 'http://' + process.env.KRN_HOST_PREFIX + 'trinity.krn.krone.at' : 'https://trinity.krone.at';
