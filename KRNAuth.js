@@ -2,9 +2,15 @@ const JWT = require('jsonwebtoken');
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 const atob = require('atob');
+const http = require('http');
+const https = require('https');
+const httpSignature = require('http-signature');
+
+
 
 // internal vs external use
 const TRINITY_BASE_URL = process.env.KRN_HOST_PREFIX ? 'http://' + process.env.KRN_HOST_PREFIX + 'trinity.krn.krone.at' : 'https://trinity.krone.at';
+
 
 const ERR_INVALID_TOKEN = { error: 'Invalid Token' };
 
@@ -13,7 +19,58 @@ class KRNAuth {
     constructor(partner) {
         this.partner = partner;
     }
+    sendRequest(method, path, headers = {}, body = "") {
+        var self = this;
+        const url = TRINITY_BASE_URL + path;
+        const parsedURL = new URL(url);
+        headers["KRN-PARTNER-KEY"] = this.partner.rest_key;
+        headers["Date"] = new Date();
+        headers["KRN-SIGN-URL"] = url;
 
+        var options = {
+            host: parsedURL.host,
+            port: parsedURL.port || 443,
+            path: path,
+            method: method,
+            headers: headers,
+          };
+          
+        return new Promise(function(resolve, reject) {
+            var data = "";
+            var proto  = http;
+            
+            if(url.match(/^https/)) {
+                
+                proto = https;
+            }
+          
+            var req = proto.request(options, function(res) {
+                res.on('data', function (chunk) {
+                  data += chunk;
+                });
+                res.on('end', function() {
+                      resolve(JSON.parse(data), res)
+
+                })
+              }).on('error', (err) => {
+                  reject(err);
+              });
+              
+              
+              httpSignature.signRequest(req, {
+                headers: ["KRN-SIGN-URL", "KRN-PARTNER-KEY", "Date"],
+                key: self.partner.rsa_key,
+                keyId: 'KMM_KEY',
+                expiresIn: 60,
+                authorizationHeaderName: "Signature"
+              });
+              
+              req.end();
+
+        })
+        
+          
+    }
     validate(token) {
         if(!token.startsWith(this.partner.name)) {
             return ERR_INVALID_TOKEN;
