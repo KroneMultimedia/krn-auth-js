@@ -8,6 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1 
       - uses: remorses/bump-version@v8
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v1
         with:
           node-version: 10
