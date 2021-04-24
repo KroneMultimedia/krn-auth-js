@@ -1,5 +1,6 @@
 {
   "name": "krn-auth-js",
+  "_": "[bump]",
   "version": "1.0.4",
   "description": "SDK for validating KRN passports",
   "homepage": "https://github.com/KroneMultimedia/krn-auth-js",
