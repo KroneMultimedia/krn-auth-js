@@ -8,8 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v1 
       - uses: remorses/bump-version@v8
-        with:
-          version_file: package.json
       - uses: actions/setup-node@v1
         with:
           node-version: 10
