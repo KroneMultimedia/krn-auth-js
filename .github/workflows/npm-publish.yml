@@ -10,6 +10,8 @@ jobs:
       - uses: remorses/bump-version@v8
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v1
         with:
           node-version: 10
