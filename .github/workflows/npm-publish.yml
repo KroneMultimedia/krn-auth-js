@@ -1,33 +1,33 @@
+name: NPM Package update
+
 on:
   push:
-    branches:
-      - "main"
+    branches: [ main ]
+
+
 jobs:
-  publish:
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v1 
-      - uses: remorses/bump-version@v8
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set the value
-        id: step_one
-        run: |
-          VINC=$(cat VERSION| awk -F"." '{ vinc=$3+1; print $1  "." $2 "." vinc }'); echo $VINC > VERSION
-      - name: Commit & Push changes
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: "main"
-          message: "[ci skip]"
- 
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 10
-      - run: npm install
-      - run: npm test
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+    - uses: actions/checkout@v2
+    - name: Set the value
+      id: step_one
+      run: |
+        VINC=$(cat VERSION| awk -F"." '{ vinc=$3+1; print $1  "." $2 "." vinc }'); echo $VINC > VERSION
+    - name: Commit & Push changes
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: "main"
+        message: "[ci skip]"
+    - name: Bump Version
+      uses: remorses/bump-version@v8
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
