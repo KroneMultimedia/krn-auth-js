@@ -106,8 +106,8 @@ class KRNAuth {
             })
             .then(response => response.json())
             .then((response) => {
-                if (response.data !== null && response.errors == undefined) {
-                    resolve(response.data);
+                if (response.error !== null && response.error == false) {
+                    resolve(response);
                 } else {
                     reject(ERR_INVALID_TOKEN);
                 }
