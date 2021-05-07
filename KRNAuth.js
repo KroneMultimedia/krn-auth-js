@@ -93,42 +93,21 @@ class KRNAuth {
     }
 
     deepValidate(token) {
-        var RENEW_QUERY = `
-            mutation doRenew($passport: String!) {
-                renew(passport: $passport) {
-                    Message
-                    Renewed
-                    PassPort
-                    Expires
-                    Error
-                    DecodedToken {
-                        Email,
-                        ID,
-                        IntID,
-                        NickName
-                    }
-                }
-            }
-        `;
 
         return new Promise(function (resolve, reject) {
-            return fetch(TRINITY_BASE_URL + '/graphql', {
+            return fetch(TRINITY_BASE_URL + '/deep-validate?token=' + token, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    operationName: 'doRenew',
-                    query: RENEW_QUERY,
-                    variables: {
-                        passport: token
                     }
                 })
             })
             .then(response => response.json())
             .then((response) => {
                 if (response.data !== null && response.errors == undefined) {
-                    resolve(response.data.renew.DecodedToken);
+                    resolve(response.data);
                 } else {
                     reject(ERR_INVALID_TOKEN);
                 }
