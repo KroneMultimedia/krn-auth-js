@@ -100,8 +100,8 @@ class KRNAuth {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    }
+                body: JSON.stringify({})
+                
                 })
             })
             .then(response => response.json())
