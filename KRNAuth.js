@@ -101,9 +101,8 @@ class KRNAuth {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({})
-                
-                })
-            })
+               }
+            )
             .then(response => response.json())
             .then((response) => {
                 if (response.error !== null && response.error == false) {
