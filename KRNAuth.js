@@ -71,6 +71,30 @@ class KRNAuth {
         
           
     }
+    validateIncl(token) {
+        if(!token.startsWith(this.partner.name)) {
+            return ERR_INVALID_TOKEN;
+        }
+
+        // remove partner prefix
+        var jwt = token.split(':')[1];
+
+        // decode and validate token
+        // https://www.npmjs.com/package/jsonwebtoken
+        try {
+            var decoded = JWT.verify(jwt, this.partner.hmac_secret, { algorithms: ['HS256'] });
+        } catch(ex) {
+            return ERR_INVALID_TOKEN;
+        }
+
+        // decrypt payload
+        var payload = this.aesDecrypt(decoded.payload, this.partner.crypt_key);
+        payload = JSON.parse(payload);
+        return {
+          token: decoded,
+          payload: payload,
+        }
+    }
     validate(token) {
         if(!token.startsWith(this.partner.name)) {
             return ERR_INVALID_TOKEN;
